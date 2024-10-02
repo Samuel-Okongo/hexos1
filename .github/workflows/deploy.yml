@@ -1,0 +1,34 @@
+name: Build and Deploy Hexos
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Deploy Application
+        run: npm run deploy
+        # Add your deployment steps here
+
+      - name: Trigger Playwright Tests
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PLAYWRIGHT_REPO_ACCESS_TOKEN }}
+          repository: Samuel-Okongo/playwrighttest
+          event-type: hexos-deployed
