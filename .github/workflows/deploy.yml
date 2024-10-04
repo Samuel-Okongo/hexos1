@@ -31,7 +31,7 @@ jobs:
 
       - name: Trigger Playwright Workflow
         env:
-          PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          PAT: ${{ secrets.PLAYWRIGHT_REPO_ACCESS_TOKEN }}
         run: |
           curl -X POST \
           -H "Authorization: token $PAT" \
