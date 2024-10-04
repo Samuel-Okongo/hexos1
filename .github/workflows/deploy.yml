@@ -1,37 +1,40 @@
-name: Build and Deploy Hexos
+name: Deploy Hexo to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: '16'
 
       - name: Install Dependencies
         run: npm install
 
-      - name: Build Application
-        run: npm run build
+      - name: Install Hexo CLI
+        run: npm install -g hexo-cli
 
-      - name: Deploy Application
+      - name: Generate Static Files
+        run: hexo generate
+
+      - name: Deploy to GitHub Pages
+        run: npx hexo deploy
+
+      - name: Trigger Playwright Workflow
+        env:
+          PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          # Add your deployment commands here
-          # For example, if using GitHub Pages:
-          # npm run deploy
-          echo "Deployment step needs to be configured"
-
-      - name: Trigger Playwright Tests
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.PLAYWRIGHT_REPO_ACCESS_TOKEN }}
-          repository: Samuel-Okongo/playwrighttest
-          event-type: hexos-deployed
+          curl -X POST \
+          -H "Authorization: token $PAT" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/Samuel-Okongo/playwrighttest/dispatches \
+          -d '{"event_type": "trigger-playwright-tests"}'
