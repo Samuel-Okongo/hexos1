@@ -23,8 +23,11 @@ jobs:
         run: npm run build
 
       - name: Deploy Application
-        run: npm run deploy
-        # Add your deployment steps here
+        run: |
+          # Add your deployment commands here
+          # For example, if using GitHub Pages:
+          # npm run deploy
+          echo "Deployment step needs to be configured"
 
       - name: Trigger Playwright Tests
         uses: peter-evans/repository-dispatch@v2
