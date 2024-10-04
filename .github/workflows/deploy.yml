@@ -27,8 +27,8 @@ jobs:
         # Add your deployment steps here
 
       - name: Trigger Playwright Tests
-        uses: Samuel-Okongo/repository-dispatch@v2
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.PLAYWRIGHT_REPO_ACCESS_TOKEN }}
-          repository: Samuel-Okongo/hexos1
+          repository: Samuel-Okongo/playwrighttest
           event-type: hexos-deployed
